@@ -1,0 +1,73 @@
+// routes/userRouter.js
+const express = require("express");
+const router = express.Router();
+const { newUserValidation, inputUserValidation } = require("../types");
+const { UserDb } = require("../db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config");
+// POST /api/v1/user/signup
+router.post("/signup", async (req, res) => {
+  const userInput = req.body;
+  const validatedUserInput = newUserValidation.safeParse(userInput);
+
+  if (!validatedUserInput.success) {
+    return res.status(400).json({
+      msg: "Sorry, invalid inputs have been given",
+      errors: validatedUserInput.error.errors,
+    });
+  }
+
+  const { firstName, lastName, username, password } = userInput;
+  // Check if already in db ?
+
+  const checkUser = await UserDb.findOne({ username: username });
+  if (checkUser) res.status(500).json({ msg: "This User already in Databse" });
+
+  const hashPassword = await bcrypt.hash(password, 10);
+
+  try {
+    await UserDb.create({
+      firstName,
+      lastName,
+      username,
+      password: hashPassword,
+    });
+
+    res.status(201).json({
+      msg: "User created successfully",
+    });
+  } catch (err) {
+    console.error("Error creating user:", err);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+});
+
+// GET /api/v1/user/signin
+
+router.get("/signin", async (req, res) => {
+  // User input and Validation
+  const userInput = req.body;
+  const validatedUserInput = inputUserValidation.safeParse(userInput);
+  if (!validatedUserInput.success)
+    res.status(411).json({ msg: "Input invalid" });
+  // Checking if it exists
+  const checkUser = await UserDb.findOne({ username: userInput.username });
+  if (!checkUser) res.status(411).json({ msg: "Incalid Credintials" });
+
+  // checking pass
+  const checkUserPass = await bcrypt.compare(
+    userInput.password,
+    checkUser.password
+  );
+  if (!checkUserPass) res.status(411).json({ msg: "Invalid Credintials" });
+
+  const token = jwt.sign({ id: checkUser._id, username: checkUser.username },JWT_SECRET);
+
+  res.status(200).json({
+    token,
+    msg:"Signed in successfully"
+  })
+});
+
+module.exports = router;
