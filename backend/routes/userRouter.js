@@ -1,7 +1,11 @@
 // routes/userRouter.js
 const express = require("express");
 const router = express.Router();
-const { newUserValidation, inputUserValidation } = require("../types");
+const {
+  newUserValidation,
+  inputUserValidation,
+  passwordChangeValidation,
+} = require("../types");
 const { UserDb } = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -86,6 +90,32 @@ router.get("/users", auth, async (req, res) => {
   );
   res.status(200).json({
     friendList,
+  });
+});
+
+// Updating User Info
+
+router.put("/update", auth, async (req, res) => {
+  const userId = req.user.id;
+  const modifyInput = req.body;
+  const validatedmodifyInput = passwordChangeValidation.safeParse(modifyInput);
+  if (!validatedmodifyInput.success)
+    res.status(411).json({ msg: "INvalid input" });
+
+  const { newPassword, firstName, lastName } = validatedmodifyInput.data;
+  let updateFields = {};
+
+  if (newPassword) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    updateFields.password = hashedPassword;
+  }
+  if (firstName) updateFields.firstName = firstName;
+  if (lastName) updateFields.lastName = lastName;
+
+  await UserDb.updateOne({ _id: userId }, { $set: updateFields });
+
+  res.status(200).json({
+    msg: "successfully Updated",
   });
 });
 

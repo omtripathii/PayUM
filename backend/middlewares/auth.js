@@ -8,13 +8,12 @@ export default function (req, res, next) {
       res.status(401).json({
         msg: "Invalid Token ",
       });
-      return;
     }
 
     req.user = tokenVerify;
 
     next();
   } catch (error) {
-    console.log(error);
+    res.status(401).json({ message: "Invalid token" });
   }
 }

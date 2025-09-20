@@ -11,7 +11,14 @@ const inputUserValidation = zod.object({
   password: zod.string().min(8, "Password must be at least 8 characters"),
 });
 
+const passwordChangeValidation = zod.object({
+    newPassword:zod.string().min(6),
+    firstName:zod.string().min(2),
+    lastName:zod.string().min(2)
+})
+
 module.exports = {
   newUserValidation,
   inputUserValidation,
+  passwordChangeValidation
 };
