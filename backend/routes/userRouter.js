@@ -6,6 +6,7 @@ const { UserDb } = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
+const { default: auth } = require("../middlewares/auth");
 // POST /api/v1/user/signup
 router.post("/signup", async (req, res) => {
   const userInput = req.body;
@@ -62,12 +63,30 @@ router.get("/signin", async (req, res) => {
   );
   if (!checkUserPass) res.status(411).json({ msg: "Invalid Credintials" });
 
-  const token = jwt.sign({ id: checkUser._id, username: checkUser.username },JWT_SECRET);
+  const token = jwt.sign(
+    { id: checkUser._id, username: checkUser.username },
+    JWT_SECRET
+  );
 
   res.status(200).json({
     token,
-    msg:"Signed in successfully"
-  })
+    msg: "Signed in successfully",
+  });
+});
+
+// Getting the Users to Send Money
+
+router.get("/users", auth, async (req, res) => {
+  const { id, username } = req.user;
+  const friendList = await UserDb.find(
+    {
+      id: { $ne: id },
+    },
+    { password: 0, username: 0 }
+  );
+  res.status(200).json({
+    friendList,
+  });
 });
 
 module.exports = router;
