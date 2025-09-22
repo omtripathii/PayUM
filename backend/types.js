@@ -16,9 +16,11 @@ const passwordChangeValidation = zod.object({
     firstName:zod.string().min(2),
     lastName:zod.string().min(2)
 })
+const inputNameValidation = zod.string().min(2)
 
 module.exports = {
   newUserValidation,
   inputUserValidation,
-  passwordChangeValidation
+  passwordChangeValidation,
+  inputNameValidation
 };

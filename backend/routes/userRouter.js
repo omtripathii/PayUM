@@ -1,10 +1,12 @@
 // routes/userRouter.js
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const {
   newUserValidation,
   inputUserValidation,
   passwordChangeValidation,
+  inputNameValidation,
 } = require("../types");
 const { UserDb } = require("../db");
 const bcrypt = require("bcrypt");
@@ -116,6 +118,43 @@ router.put("/update", auth, async (req, res) => {
 
   res.status(200).json({
     msg: "successfully Updated",
+  });
+});
+
+// Filter by firstName and lastName
+
+// router.get("/bulk", auth, async (req, res) => {
+//   const name = req.query.name || "";
+//   const { id, username } = req.user;
+
+//   try {
+//     const filterList = await UserDb.find({
+//       _id: { $ne: new mongoose.Types.ObjectId(id) },
+//       $or: [
+//         { firstName: { $regex: name, $options: "i" } },
+//         { lastName: { $regex: name, $options: "i" } },
+//         { username: { $regex: name, $options: "i" } }, // include this too
+//       ],
+//     }).select("-password");
+
+//     res.status(200).json({ filterList });
+//   } catch (error) {
+//     console.log("Error in /bulk:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
+
+router.get("/bulk", async (req, res) => {
+  const filter = req.query.name;
+  const filteredList = await UserDb.find({
+    $or: [
+      { firstName: { $regex: filter, $options: "i" } },
+      { lastName: { $regex: filter, $options: "i" } },
+    ],
+  }).select("-password");
+
+  res.json({
+    filteredList,
   });
 });
 
