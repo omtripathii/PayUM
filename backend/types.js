@@ -12,15 +12,21 @@ const inputUserValidation = zod.object({
 });
 
 const passwordChangeValidation = zod.object({
-    newPassword:zod.string().min(6),
-    firstName:zod.string().min(2),
-    lastName:zod.string().min(2)
-})
-const inputNameValidation = zod.string().min(2)
+  newPassword: zod.string().min(6),
+  firstName: zod.string().min(2),
+  lastName: zod.string().min(2),
+});
+const inputNameValidation = zod.string().min(2);
+
+const tranferInputValidation = zod.object({
+  toUser: zod.string(),
+  amount: zod.number().refine((n) => n >= 1),
+});
 
 module.exports = {
   newUserValidation,
   inputUserValidation,
   passwordChangeValidation,
-  inputNameValidation
+  inputNameValidation,
+  tranferInputValidation,
 };
