@@ -8,7 +8,7 @@ const {
   passwordChangeValidation,
   inputNameValidation,
 } = require("../types");
-const { UserDb } = require("../db");
+const { UserDb, AcountsDb } = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
@@ -34,13 +34,19 @@ router.post("/signup", async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
 
   try {
-    await UserDb.create({
+    const user = await UserDb.create({
       firstName,
       lastName,
       username,
       password: hashPassword,
     });
+    const userID = user._id;
 
+    // We are not using a Bank Api therefore randomly assinging the banck balance when a user is created
+    await AcountsDb.create({
+      userID,
+      balance: 1 + Math.random() * 10000,
+    });
     res.status(201).json({
       msg: "User created successfully",
     });
