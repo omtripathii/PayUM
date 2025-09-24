@@ -1,2 +1,2 @@
 
-## Build a basic version of PayTM
+## Send Money To Your Friends On a Click With PayUM
