@@ -1,13 +1,15 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from "../../Hooks/useAuth";
 function Signin() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
   const navigate = useNavigate();
+  const { loading, auth } = useAuth();
   function handleOnchange(e) {
     setFormData({
       ...formData,
@@ -26,13 +28,19 @@ function Signin() {
           withCredentials: true, // Required for cookies
         }
       );
-    //   console.log(response.data);
+      //   console.log(response.data);
       toast.success("Login successful");
       navigate("/dashboard");
     } catch (error) {
       toast.error(error.response?.data?.msg || "Signin failed");
     }
   };
+  // if (loading) {
+  //   return <div>Loading.......</div>;
+  // }
+  if (auth) {
+    return <Navigate to="/dashboard" replace />;
+  }
   return (
     <div>
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">

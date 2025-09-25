@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Hooks/useAuth";
 function SignUp() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -12,6 +13,7 @@ function SignUp() {
   });
 
   const navigate = useNavigate();
+  const { loading, auth } = useAuth();
 
   function handleOnchange(e) {
     setFormData({
@@ -37,6 +39,12 @@ function SignUp() {
       toast.error(error.response?.data?.msg || "Signup failed");
     }
   };
+  if (loading) {
+    return <div>Loading.......</div>;
+  }
+  if(auth){
+    return <Navigate to="/dashboard" replace />;
+  }
   return (
     <div>
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">

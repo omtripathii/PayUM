@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const app = express()
+const app = express();
 const cookieParser = require("cookie-parser");
 const {
   newUserValidation,
@@ -15,6 +15,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const { default: auth } = require("../middlewares/auth");
+const { success } = require("zod");
 app.use(cookieParser());
 // POST /api/v1/user/signup
 router.post("/signup", async (req, res) => {
@@ -100,7 +101,7 @@ router.get("/users", auth, async (req, res) => {
   const { id, username } = req.user;
   const friendList = await UserDb.find(
     {
-      id: { $ne: id },
+      _id: { $ne: id },
     },
     { password: 0, username: 0 }
   );
@@ -158,9 +159,11 @@ router.put("/update", auth, async (req, res) => {
 //   }
 // });
 
-router.get("/bulk", async (req, res) => {
+router.get("/bulk", auth, async (req, res) => {
+  const { id } = req.user;
   const filter = req.query.name;
   const filteredList = await UserDb.find({
+    _id: { $ne: id },
     $or: [
       { firstName: { $regex: filter, $options: "i" } },
       { lastName: { $regex: filter, $options: "i" } },
@@ -170,6 +173,17 @@ router.get("/bulk", async (req, res) => {
   res.json({
     filteredList,
   });
+});
+
+// For Frontend Auth
+
+router.get("/isAuthenticated", auth, async (req, res) => {
+  const { id } = req.user;
+  const UserData = await UserDb.findById({ _id: id }).select("-password");
+
+  res
+    .status(200)
+    .json({ success: true, UserData, msg: "You are Authenticated" });
 });
 
 module.exports = router;
