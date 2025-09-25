@@ -1,5 +1,26 @@
+# ✨ Screenshots
 
-# PayUM – Peer-to-Peer Payment Platform
+<div align="center">
+  <img src="images/signin.png" alt="Sign In" width="350" />
+  <img src="images/signup.png" alt="Sign Up" width="350" />
+  <br />
+  <b>Sign In / Sign Up</b>
+  <br /><br />
+  <img src="images/dashboard.png" alt="Dashboard" width="600" />
+  <br />
+  <b>Dashboard</b>
+  <br /><br />
+  <img src="images/filter.png" alt="User Filter" width="400" />
+  <br />
+  <b>User Filter</b>
+  <br /><br />
+  <img src="images/sendmoney.png" alt="Send Money Modal" width="400" />
+  <img src="images/transactionsuccess.png" alt="Transaction Success" width="400" />
+  <br />
+  <b>Send Money Modal / Transaction Success</b>
+</div>
+
+# PayUM –  Peer-to-Peer Payment Platform
 
 PayUM is a modern, full-stack Paytm-inspired application that enables users to seamlessly send and receive money with friends, all in a secure and intuitive environment. Built with a robust Node.js/Express backend and a lightning-fast React + Vite frontend, PayUM delivers a real-world digital wallet experience for learning, demo, and portfolio use.
 
@@ -80,7 +101,7 @@ npm install
 npm run dev
 ```
 
-### 4. Open in Your Browser
+### 4. Open in Browser
 Visit [http://localhost:5173](http://localhost:5173)
 
 ---
@@ -90,34 +111,6 @@ Visit [http://localhost:5173](http://localhost:5173)
 - Input validation is enforced on both frontend and backend.
 - Passwords are hashed before storage.
 - Transactions are atomic and validated for sufficient balance.
-
----
-
-
-## ✨ Screenshots
-
-<div align="center">
-	<img src="images/dashboard.png" alt="Dashboard" width="600" />
-	<br />
-	<b>Dashboard</b>
-	<br /><br />
-	<img src="images/sendmoney.png" alt="Send Money Modal" width="400" />
-	<br />
-	<b>Send Money Modal</b>
-	<br /><br />
-	<img src="images/transactionsuccess.png" alt="Transaction Success" width="400" />
-	<br />
-	<b>Transaction Success</b>
-	<br /><br />
-	<img src="images/filter.png" alt="User Filter" width="400" />
-	<br />
-	<b>User Filter</b>
-	<br /><br />
-	<img src="images/signin.png" alt="Sign In" width="350" />
-	<img src="images/signup.png" alt="Sign Up" width="350" />
-	<br />
-	<b>Sign In / Sign Up</b>
-</div>
 
 ---
 
