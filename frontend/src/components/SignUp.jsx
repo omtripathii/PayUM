@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 function SignUp() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -10,7 +11,7 @@ function SignUp() {
     password: "",
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function handleOnchange(e) {
     setFormData({
@@ -23,20 +24,17 @@ function SignUp() {
 
     try {
       console.log(formData);
-      
 
       const response = await axios.post(
         "http://localhost:3000/api/v1/user/signup",
         formData
       );
       console.log("Signup successful:", response.data);
-       toast.success(response.data.msg);
-       navigate("/signin")
-      
+      toast.success(response.data.msg);
+      navigate("/signin");
     } catch (error) {
       console.error("Signup error:", error.response?.data || error.message);
-      toast.error(error.response?.data?.message || "Signup failed");
-      
+      toast.error(error.response?.data?.msg || "Signup failed");
     }
   };
   return (
@@ -141,7 +139,7 @@ function SignUp() {
             <div className="flex flex-row justify-center gap-1">
               <p>Already have an account?</p>{" "}
               <div className="font-semibold cursor-pointer hover:text-gray-700">
-                Login
+                <Link to="/signin"> Login</Link>
               </div>
             </div>
           </form>

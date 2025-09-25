@@ -2,6 +2,8 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const app = express()
+const cookieParser = require("cookie-parser");
 const {
   newUserValidation,
   inputUserValidation,
@@ -13,6 +15,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config");
 const { default: auth } = require("../middlewares/auth");
+app.use(cookieParser());
 // POST /api/v1/user/signup
 router.post("/signup", async (req, res) => {
   const userInput = req.body;
@@ -58,12 +61,12 @@ router.post("/signup", async (req, res) => {
 
 // GET /api/v1/user/signin
 
-router.get("/signin", async (req, res) => {
+router.post("/signin", async (req, res) => {
   // User input and Validation
   const userInput = req.body;
   const validatedUserInput = inputUserValidation.safeParse(userInput);
   if (!validatedUserInput.success)
-    res.status(411).json({ msg: "Input invalid" });
+    res.status(400).json({ msg: "Input invalid" });
   // Checking if it exists
   const checkUser = await UserDb.findOne({ username: userInput.username });
   if (!checkUser) res.status(411).json({ msg: "Incalid Credintials" });
@@ -77,13 +80,18 @@ router.get("/signin", async (req, res) => {
 
   const token = jwt.sign(
     { id: checkUser._id, username: checkUser.username },
-    JWT_SECRET
+    JWT_SECRET,
+    { expiresIn: "1h" }
   );
 
-  res.status(200).json({
-    token,
-    msg: "Signed in successfully",
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "Lax",
+    maxAge: 60 * 60 * 1000, // 1 hour
   });
+
+  return res.json({ success: true, message: "Logged in successfully" });
 });
 
 // Getting the Users to Send Money

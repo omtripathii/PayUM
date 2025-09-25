@@ -3,9 +3,13 @@ const express = require("express");
 const apiRouter = require("./routes/apiRouter");
 const cors = require("cors")
 const app = express();
-
+const cookieParser = require("cookie-parser")
 app.use(express.json());
-app.use(cors())
+app.use(cookieParser());
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
 // All routes under /api/v1
 app.use("/api/v1", apiRouter);
 
